@@ -1,4 +1,4 @@
-import { screen, render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { LoginForm } from "../components/LoginForm";
 
@@ -7,22 +7,22 @@ describe("LoginForm", () => {
     render(<LoginForm />);
   });
 
-  it("should exist two inputs in the view", () => {
+  it("shoul display both inputs", () => {
     expect(screen.getByLabelText(/nombre de usuario/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/contraseña/i)).toBeInTheDocument();
   });
 
-  it("should exist a login button", () => {
+  it("should display button", () => {
     expect(screen.getByText(/login/i)).toBeInTheDocument();
   });
 
-  it("should have the correct value when the user type in the fields", async () => {
+  it("should have correct values into both inputs", async () => {
     const usernameField = screen.getByLabelText(/nombre de usuario/i);
     const passwordField = screen.getByLabelText(/contraseña/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByText(/login/i);
 
     const usernameValue = "mauricio";
-    const passwordValue = "Mauricio123!";
+    const passwordValue = "!Mauricio123";
 
     await user.type(usernameField, usernameValue);
     await user.type(passwordField, passwordValue);
@@ -35,37 +35,27 @@ describe("LoginForm", () => {
 
     await waitFor(() => {
       expect(screen.getByText(`User: ${usernameValue}`)).toBeInTheDocument();
-      expect(
-        screen.getByText(`Password: ${passwordValue}`)
-      ).toBeInTheDocument();
+      expect(screen.getByText(`Password: ${passwordValue}`)).toBeInTheDocument();
     });
   });
 
-  test("should have errors message when the value of the fields are invalid", async () => {
+  it("should have inorrect values into both inputs", async () => {
     const usernameField = screen.getByLabelText(/nombre de usuario/i);
     const passwordField = screen.getByLabelText(/contraseña/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByText(/login/i);
 
-    const usernameValue = "username12345";
-    const passwordValue = "pass123";
+    const usernameValue = "mauricio12312312123";
+    const passwordValue = "Mauricio123";
 
     await user.type(usernameField, usernameValue);
     await user.type(passwordField, passwordValue);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("Username debe ser máximo de 12 caracteres")
-      ).toBeInTheDocument()
-    );
-
-    await waitFor(() =>
-      expect(
-        screen.getByText(
-          "Password debe ser alfanumérico, y contener máximo 12 caracteres, una mayúscula y un caracter especial"
-        )
-      ).toBeInTheDocument()
-    );
-
+    await waitFor(() => expect(usernameField).toHaveValue(usernameValue));
+    await waitFor(() => expect(passwordField).toHaveValue(passwordValue));
     await waitFor(() => expect(submitButton).toBeDisabled());
+
+    await waitFor(() => {
+      expect(screen.getByText(`Username debe ser máximo de 12 caracteres`)).toBeInTheDocument();
+    });
   });
 });
