@@ -30,6 +30,7 @@ export const LoginForm = () => {
 
     setValues({
       ...result,
+      ...data
     });
 
     reset();
@@ -55,10 +56,10 @@ export const LoginForm = () => {
         {values.username && values.password && (
           <>
             <Typography variant="h5">
-              <strong>User:</strong> {values.name}
+              User: {values.username}
             </Typography>
             <Typography variant="h5">
-              <strong>Status:</strong> {values.status}
+              Password: {values.password}
             </Typography>
           </>
         )}
